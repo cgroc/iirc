@@ -25,4 +25,7 @@ object Room {
   implicit val roomDecoder: Decoder[Room] = deriveDecoder[Room]
 
   implicit val roomEncoder: Encoder[Room] = deriveEncoder[Room]
+
+  implicit val entityDecoderMessage: EntityDecoder[IO, Room] =
+    jsonOf[IO, Room]
 }

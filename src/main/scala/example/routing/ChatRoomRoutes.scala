@@ -2,7 +2,7 @@ package example.routing
 
 import cats.effect.IO
 import example.handlers.RoomHandler
-import example.model.Message
+import example.model.{Message, Room}
 import io.circe.syntax._
 import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
@@ -17,9 +17,16 @@ object ChatRoomRoutes extends Http4sDsl[IO] {
         r => Ok(r.messages.asJson)
       }
 
-    case PUT -> Root / room =>
-      RoomHandler.makeRoomAndPut(room) flatMap[Response[IO]] {
-        r => Created(r.asJson)
+    case req@PUT -> Root / "room" / name =>
+      req.attemptAs[Room].value flatMap {
+        case Left(_) =>
+          BadRequest()
+        case Right(r) if r.name equals name =>
+          RoomHandler.putRoomToCache(r) flatMap {
+            _ => Created(r.asJson)
+          }
+        case Right(_) =>
+          BadRequest("Resource name different from room name")
       }
 
     case req@POST -> Root / "room" / name =>
