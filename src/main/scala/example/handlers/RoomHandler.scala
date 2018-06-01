@@ -42,12 +42,21 @@ object RoomHandler {
     }
   }
 
-  private def makeRoomAndPut(roomName: String): IO[Room] = {
+  def makeRoomAndPut(roomName: String): IO[Room] = {
     val newRoom: Room = Room(roomName, List.empty)
     putRoomToCache(newRoom) map {
       _ => newRoom
     }
   }
+
+  def updateRoom(roomName: String, message: Message): IO[Room] =
+    getRoom(roomName) map {
+      r => {
+        val updated: Room = r.copy(messages = r.messages ++ List(message))
+        putRoomToCache(updated).unsafeRunSync
+        updated
+      }
+    }
 
 }
 
