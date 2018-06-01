@@ -20,5 +20,5 @@ lazy val root = (project in file(".")).
       scalaCacheCats,
       logback,
       slf4j
-    )
-  )
+    ),
+  ).enablePlugins(JavaAppPackaging)
