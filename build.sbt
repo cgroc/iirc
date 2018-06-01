@@ -15,6 +15,8 @@ lazy val root = (project in file(".")).
       http4sDsl,
       circeCore,
       circeGeneric,
-      circeParser
+      circeParser,
+      "com.github.cb372" %% "scalacache-caffeine" % "0.22.0",
+      "com.github.cb372" %% "scalacache-cats-effect" % "0.22.0"
     )
   )
