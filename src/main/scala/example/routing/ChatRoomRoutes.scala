@@ -6,17 +6,11 @@ import example.model.Message
 import io.circe.syntax._
 import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
-import org.http4s.{EntityDecoder, Request, Response}
-
+import org.http4s.{Request, Response}
 
 object ChatRoomRoutes extends Http4sDsl[IO] {
 
-  implicit val entityDecoderMessage: EntityDecoder[IO, Message] =
-    jsonOf[IO, Message]
-
   def routes(): PartialFunction[Request[IO], IO[Response[IO]]] = {
-    case GET -> Root / "hello" / name =>
-      Ok(s"Hello, $name.")
 
     case GET -> Root / "room" / name =>
       RoomHandler.getRoom(name) flatMap {
