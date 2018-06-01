@@ -25,7 +25,7 @@ object ChatRoomRoutes extends Http4sDsl[IO] {
 
     case PUT -> Root / room =>
       RoomHandler.makeRoomAndPut(room) flatMap[Response[IO]] {
-        _ => Created()
+        r => Created(r.asJson)
       }
 
     case req@POST -> Root / "room" / name =>
