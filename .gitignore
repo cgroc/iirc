@@ -1,2 +1,13 @@
+# Scala stuff
 *.class
 *.log
+*project/target
+*target
+
+
+# IDE
+*.idea
+
+#MacOS
+.DS_Store
+
