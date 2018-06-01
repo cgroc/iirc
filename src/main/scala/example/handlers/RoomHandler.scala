@@ -7,20 +7,14 @@ import scalacache.caffeine._
 import scala.language.implicitConversions
 import scalacache.CatsEffect.modes._
 
-
-
 object RoomHandler {
-
-  def handle(roomName: String): Room = {
-    Room(roomName, List(Message("iirc admin", "Behave!")))
-  }
 
   implicit val caffeineCache: Cache[Room] = CaffeineCache[Room]
 
-  def putRoom(room: Room): IO[Any] =
+  def putRoomToCache(room: Room): IO[Any] =
     put(room.name)(room)
 
-  def getRoom(name: String): IO[RoomFromStorageResult] =
+  def getRoomFromCahe(name: String): IO[RoomFromStorageResult] =
     get[IO, Room](name)
 
   sealed trait RoomFromStorageResult
@@ -40,6 +34,21 @@ object RoomHandler {
           NoRoomFound
       }
   }
+
+  def getRoom(roomName: String): IO[Room] = {
+    getRoomFromCahe(roomName).flatMap {
+      case NoRoomFound => makeRoomAndPut(roomName)
+      case RoomFound(r) => IO.pure(r)
+    }
+  }
+
+  private def makeRoomAndPut(roomName: String): IO[Room] = {
+    val newRoom: Room = Room(roomName, List.empty)
+    putRoomToCache(newRoom) map {
+      _ => newRoom
+    }
+  }
+
 }
 
 

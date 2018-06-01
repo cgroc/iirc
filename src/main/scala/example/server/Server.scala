@@ -18,7 +18,7 @@ object Server extends StreamApp[IO] with Http4sDsl[IO] {
 
   override def stream(args: List[String], requestShutdown: IO[Unit]): fs2.Stream[IO, ExitCode] =
     BlazeBuilder[IO]
-      .bindHttp(8080, "localhost")
+      .bindHttp(8080, "0.0.0.0")
       .mountService(helloWorldService, "/")
       .serve
 }

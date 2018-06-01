@@ -15,8 +15,10 @@ object ChatRoomRoutes extends Http4sDsl[IO] {
       Ok(s"Hello, $name.")
 
     case GET -> Root / "room" / name =>
-      val room = RoomHandler.handle(name)
-      Ok(room.messages.asJson)
+      RoomHandler.getRoom(name) flatMap {
+        r => Ok(r.messages.asJson)
+      }
+
 
     case PUT -> Root / "room" =>
       Created(s"Your room was created")
