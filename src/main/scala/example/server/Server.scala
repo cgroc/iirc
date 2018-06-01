@@ -12,13 +12,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 object Server extends StreamApp[IO] with Http4sDsl[IO] {
 
+  val port: Int = Option(System.getProperty("PORT")).getOrElse("8080").toInt
+
   val helloWorldService: HttpService[IO] = HttpService[IO] {
       ChatRoomRoutes.routes()
   }
 
   override def stream(args: List[String], requestShutdown: IO[Unit]): fs2.Stream[IO, ExitCode] =
     BlazeBuilder[IO]
-      .bindHttp(8080, "0.0.0.0")
+      .bindHttp(port, "0.0.0.0")
       .mountService(helloWorldService, "/")
       .serve
 }

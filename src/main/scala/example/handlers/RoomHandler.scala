@@ -52,7 +52,7 @@ object RoomHandler {
   def updateRoom(roomName: String, message: Message): IO[Room] =
     getRoom(roomName) map {
       r => {
-        val updated: Room = r.copy(messages = r.messages ++ List(message))
+        val updated: Room = r.copy(messages = r.messages :+ message)
         putRoomToCache(updated).unsafeRunSync
         updated
       }
